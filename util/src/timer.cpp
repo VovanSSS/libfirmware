@@ -1,7 +1,7 @@
 #include <rusefi/timer.h>
 #include <rusefi/rusefi_time_math.h>
 
-void Timer::reset() {
+TRIGGER_RAM_CODE void Timer::reset() {
 	m_lastReset = getTimeNowNt();
 }
 
@@ -10,7 +10,7 @@ void Timer::init() {
 	m_lastReset = InitialState;
 }
 
-void Timer::reset(efitick_t const nowNt) {
+TRIGGER_RAM_CODE void Timer::reset(efitick_t const nowNt) {
 	m_lastReset = nowNt;
 }
 
@@ -22,7 +22,7 @@ bool Timer::hasElapsedMs(float const milliseconds) const {
 	return hasElapsedUs(milliseconds * 1000);
 }
 
-bool Timer::hasElapsedUs(float const microseconds) const {
+TRIGGER_RAM_CODE bool Timer::hasElapsedUs(float const microseconds) const {
 	// Like past has already passed...
 	if (microseconds <= 0) {
 		return true;;
@@ -52,15 +52,15 @@ bool Timer::hasElapsedUs(float const microseconds) const {
 	return static_cast<uint32_t>(delta) > static_cast<uint32_t>(USF2NT(microseconds));
 }
 
-float Timer::getElapsedSeconds() const {
+TRIGGER_RAM_CODE float Timer::getElapsedSeconds() const {
 	return getElapsedSeconds(getTimeNowNt());
 }
 
-float Timer::getElapsedSeconds(efitick_t nowNt) const {
+TRIGGER_RAM_CODE float Timer::getElapsedSeconds(efitick_t nowNt) const {
 	return 1.f / US_PER_SECOND_F * getElapsedUs(nowNt);
 }
 
-float Timer::getElapsedUs() const {
+TRIGGER_RAM_CODE float Timer::getElapsedUs() const {
 	return getElapsedUs(getTimeNowNt());
 }
 
@@ -77,7 +77,7 @@ uint32_t Timer::getElapsedNt(efitick_t const nowNt) const {
 	return deltaNt >= static_cast<int64_t>(UINT32_MAX) ? UINT32_MAX : static_cast<uint32_t>(deltaNt);
 }
 
-float Timer::getElapsedUs(efitick_t const nowNt) const {
+TRIGGER_RAM_CODE float Timer::getElapsedUs(efitick_t const nowNt) const {
 	// Wraparound is not considered
 	auto const delta32{ getElapsedNt(nowNt) };
 
@@ -101,7 +101,7 @@ float Timer::getElapsedUs(efitick_t const nowNt) const {
 	return static_cast<float>(NT2US(delta32f));
 }
 
-float Timer::getElapsedSecondsAndReset(efitick_t const nowNt) {
+TRIGGER_RAM_CODE float Timer::getElapsedSecondsAndReset(efitick_t const nowNt) {
 	float const result{ getElapsedSeconds(nowNt) };
 
 	reset(nowNt);
